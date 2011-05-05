@@ -99,6 +99,10 @@
 
 (function(window, document, plupload, undef) {
 	var blobs = {};
+	
+	function getElement(element){
+		 return typeof(element) == "object" ? element : document.getElementById(element);
+	}
 
 	function scaleImage(image_blob, resize, mime) {
 		var percentage, canvas, context, scale;
@@ -201,7 +205,7 @@
 
 			// Add drop handler
 			uploader.bind("PostInit", function() {
-				var settings = uploader.settings, dropElm = document.getElementById(settings.drop_element);
+				var settings = uploader.settings, dropElm = getElement(settings.drop_element);
 
 				if (dropElm) {
 					// Block browser default drag over
@@ -226,7 +230,7 @@
 				}
 
 				// Add browse button
-				plupload.addEvent(document.getElementById(settings.browse_button), 'click', function(e) {
+				plupload.addEvent(getElement(settings.browse_button), 'click', function(e) {
 					var filters = [], i, a, ext;
 
 					e.preventDefault();
@@ -430,7 +434,7 @@
 				
 				// Unbind event handlers
 				for (name in elements) {
-					element = document.getElementById(elements[name]);
+					element = getElement(elements[name]);
 					if (element) {
 						plupload.removeAllEvents(element, up.id);
 					}

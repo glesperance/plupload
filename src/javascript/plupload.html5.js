@@ -12,8 +12,13 @@
 /*global plupload:false, File:false, window:false, atob:false, FormData:false, FileReader:false, ArrayBuffer:false, Uint8Array:false, BlobBuilder:false, unescape:false */
 
 (function(window, document, plupload, undef) {
+
 	var html5files = {}, // queue of original File objects
 		fakeSafariDragDrop;
+	
+	function getElement(element){
+		 return typeof(element) == "object" ? element : document.getElementById(element);
+	}
 
 	function readFileAsDataURL(file, callback) {
 		var reader;
@@ -266,7 +271,7 @@
 				inputContainer.className = 'plupload html5';
 
 				if (uploader.settings.container) {
-					container = document.getElementById(uploader.settings.container);
+					container = getElement(uploader.settings.container);
 					if (plupload.getStyle(container, 'position') === 'static') {
 						container.style.position = 'relative';
 					}
@@ -302,7 +307,7 @@
 											(uploader.settings.multi_selection && uploader.features.multi_selection ? 'multiple="multiple"' : '') + ' />';
 
 				inputContainer.scrollTop = 100;
-				inputFile = document.getElementById(uploader.id + '_html5');
+				inputFile = getElement(uploader.id + '_html5');
 				
 				if (up.features.triggerDialog) {
 					plupload.extend(inputFile.style, {
@@ -330,7 +335,7 @@
 				browse_button loses interactivity, here we try to neutralize this issue highlighting browse_button
 				with a special classes
 				TODO: needs to be revised as things will change */
-				browseButton = document.getElementById(up.settings.browse_button);
+				browseButton = getElement(up.settings.browse_button);
 				if (browseButton) {				
 					var hoverClass = up.settings.browse_button_hover,
 						activeClass = up.settings.browse_button_active,
@@ -357,7 +362,7 @@
 					// Route click event to the input[type=file] element for supporting browsers
 					if (up.features.triggerDialog) {
 						plupload.addEvent(browseButton, 'click', function(e) {
-							var input = document.getElementById(up.id + '_html5');
+							var input = getElement(up.id + '_html5');
 							if (input && !input.disabled) { // for some reason FF (up to 8.0.1 so far) lets to click disabled input[type=file]
 								input.click();
 							}
@@ -369,7 +374,7 @@
 
 			// Add drop handler
 			uploader.bind("PostInit", function() {
-				var dropElm = document.getElementById(uploader.settings.drop_element);
+				var dropElm = getElement(uploader.settings.drop_element);
 
 				if (dropElm) {
 					// Lets fake drag/drop on Safari by moving a input type file in front of the mouse pointer when we drag into the drop zone
@@ -379,7 +384,7 @@
 							var dropInputElm, dropPos, dropSize;
 
 							// Get or create drop zone
-							dropInputElm = document.getElementById(uploader.id + "_drop");
+							dropInputElm = getElement(uploader.id + "_drop");
 							if (!dropInputElm) {
 								dropInputElm = document.createElement("input");
 								dropInputElm.setAttribute('type', "file");
@@ -398,7 +403,7 @@
 								dropElm.appendChild(dropInputElm);
 							}
 
-							dropPos = plupload.getPos(dropElm, document.getElementById(uploader.settings.container));
+							dropPos = plupload.getPos(dropElm, getElement(uploader.settings.container));
 							dropSize = plupload.getSize(dropElm);
 							
 							if (plupload.getStyle(dropElm, 'position') === 'static') {
@@ -443,11 +448,11 @@
 			uploader.bind("Refresh", function(up) {
 				var browseButton, browsePos, browseSize, inputContainer, zIndex;
 					
-				browseButton = document.getElementById(uploader.settings.browse_button);
+				browseButton = getElement(uploader.settings.browse_button);
 				if (browseButton) {
-					browsePos = plupload.getPos(browseButton, document.getElementById(up.settings.container));
+					browsePos = plupload.getPos(browseButton, getElement(up.settings.container));
 					browseSize = plupload.getSize(browseButton);
-					inputContainer = document.getElementById(uploader.id + '_html5_container');
+					inputContainer = getElement(uploader.id + '_html5_container');
 	
 					plupload.extend(inputContainer.style, {
 						top : browsePos.y + 'px',
@@ -772,7 +777,7 @@
 
 				// Unbind event handlers
 				for (name in elements) {
-					element = document.getElementById(elements[name]);
+					element = getElement(elements[name]);
 					if (element) {
 						plupload.removeAllEvents(element, up.id);
 					}
@@ -780,11 +785,11 @@
 				plupload.removeAllEvents(document.body, up.id);
 				
 				if (up.settings.container) {
-					container = document.getElementById(up.settings.container);
+					container = getElement(up.settings.container);
 				}
 				
 				// Remove mark-up
-				container.removeChild(document.getElementById(elements.inputContainer));
+				container.removeChild(getElement(elements.inputContainer));
 			});
 
 			callback({success : true});
@@ -1411,4 +1416,5 @@
 			}
 		};
 	};
+	
 })(window, document, plupload);
